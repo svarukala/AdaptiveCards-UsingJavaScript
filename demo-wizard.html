@@ -1,0 +1,229 @@
+<html>
+    <head>
+        <script src="https://unpkg.com/adaptivecards/dist/adaptivecards.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/adaptive-expressions@4.14.1/lib/browser.min.js"></script>
+        <!--
+            <script src="https://unpkg.com/adaptive-expressions@4/lib/browser.js"></script>
+        -->
+        <script src="https://unpkg.com/adaptivecards-templating/dist/adaptivecards-templating.min.js"></script>
+        <script src="bundle.js"></script>
+    </head>
+    <body>
+        <a href="/">Home</a>
+        <h1>Templating Adaptive Cards and Populating Data</h1>
+        <script>
+                var template = new ACData.Template({
+    "type": "AdaptiveCard",
+    "version": "1.0",
+    "body": [
+        {
+            "type": "TextBlock",
+            "text": "${formTitle}",
+            "wrap": true
+        }
+    ],
+    "actions": [
+        {
+            "type": "Action.ShowCard",
+            "title": "${nameCard.title}",
+            "card": {
+                "type": "AdaptiveCard",
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "body": [
+                    {
+                        "type": "Container",
+                        "id": "${nameCard.idPrefix}Properties",
+                        "items": [
+                            {
+                                "$data": "${nameCard.fields}",
+                                "type": "Input.Text",
+                                "label": "${label}",
+                                "id": "${id}",
+                                "isRequired": "${required}",
+                                "errorMessage": "'${label}' is required"
+                            }
+                        ]
+                    }
+                ],
+                "actions": [
+                    {
+                        "type": "Action.ShowCard",
+                        "title": "${addressCard.title}",
+                        "card": {
+                            "type": "AdaptiveCard",
+                            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                            "body": [
+                                {
+                                    "type": "Container",
+                                    "id": "${addressCard.idPrefix}Properties",
+                                    "items": [
+                                        {
+                                            "$data": "${addressCard.textInputFields}",
+                                            "type": "Input.Text",
+                                            "label": "${label}",
+                                            "id": "${id}",
+                                            "isRequired": "${required}",
+                                            "errorMessage": "'${label} is required"
+                                        },
+                                        {
+                                            "type": "ColumnSet",
+                                            "columns": [
+                                                {
+                                                    "$data": "${addressCard.columnFields}",
+                                                    "type": "Column",
+                                                    "width": "stretch",
+                                                    "items": [
+                                                        {
+                                                            "type": "Input.Text",
+                                                            "label": "${label}",
+                                                            "id": "${id}",
+                                                            "isRequired": "${required}",
+                                                            "errorMessage": "'${label}' is required"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "actions": [
+                                {
+                                    "type": "Action.ShowCard",
+                                    "title": "${contactCard.title}",
+                                    "card": {
+                                        "type": "AdaptiveCard",
+                                        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                                        "body": [
+                                            {
+                                                "$data": "${contactCard.fields}",
+                                                "type": "Input.Text",
+                                                "label": "${label}",
+                                                "id": "${id}",
+                                                "isRequired": "${required}",
+                                                "errorMessage": "'${label}' is required"
+                                            }
+                                        ],
+                                        "actions": [
+                                            {
+                                                "type": "Action.Submit",
+                                                "title": "Submit"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+});
+
+                var card = template.expand({
+                    $root: {
+                            "formTitle": "Please provide the following information:",
+                            "nameCard": {
+                                "title": "Name",
+                                "idPrefix": "name",
+                                "fields": [
+                                {
+                                    "label": "First Name",
+                                    "id": "FirstName",
+                                    "required": true
+                                },
+                                {
+                                    "label": "Middle Name",
+                                    "id": "MiddleName",
+                                    "required": false
+                                },
+                                {
+                                    "label": "Last Name",
+                                    "id": "LastName",
+                                    "required": true
+                                }
+                                ]
+                            },
+                            "addressCard": {
+                                "title": "Address",
+                                "idPrefix": "address",
+                                "textInputFields": [
+                                {
+                                "label": "Address line 1",
+                                "id": "addressLine1",
+                                    "required": true
+                                },
+                                {
+                                    "label": "Address line 2",
+                                    "id": "addressLine2",
+                                    "required": false
+                                }
+                                ],
+                                "columnFields": [
+                                {
+                                    "label": "City",
+                                    "id": "city",
+                                    "required": false
+                                },
+                                {
+                                    "label": "State",
+                                    "id": "state",
+                                    "required": false
+                                },
+                                {
+                                    "label": "Zip Code",
+                                    "id": "zip",
+                                    "required": true
+                                }
+                                ]
+                            },
+                            "contactCard": {
+                                "title": "Phone/Email",
+                                "idPrefix": "contact",
+                                "fields": [
+                                {
+                                    "label": "Mobile number",
+                                    "id": "mobileNumber",
+                                    "required": false
+                                },
+                                {
+                                    "label": "Home number",
+                                    "id": "homeNumber",
+                                    "required": false
+                                },
+                                {
+                                    "label": "Email address",
+                                    "id": "emailAddress",
+                                    "required": true
+                                }
+                                ]
+                            }
+                            }
+                });                
+            // Create an AdaptiveCard instance
+            var adaptiveCard = new AdaptiveCards.AdaptiveCard();
+
+            // Set its hostConfig property unless you want to use the default Host Config
+            // Host Config defines the style and behavior of a card
+            adaptiveCard.hostConfig = new AdaptiveCards.HostConfig({
+                fontFamily: "Segoe UI, Helvetica Neue, sans-serif"
+                // More host config options
+            });
+
+            // Set the adaptive card's event handlers. onExecuteAction is invoked
+            // whenever an action is clicked in the card
+            adaptiveCard.onExecuteAction = function(action) { alert("Ow!"); }
+
+            // Parse the card payload
+            adaptiveCard.parse(card);
+            
+            // Render the card to an HTML element:
+            var renderedCard = adaptiveCard.render();
+
+            // And finally insert it somewhere in your page:
+            document.body.appendChild(renderedCard);
+
+        </script>
+    </body>
+</html>
