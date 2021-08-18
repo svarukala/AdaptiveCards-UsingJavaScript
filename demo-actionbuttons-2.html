@@ -156,7 +156,6 @@
             // Set the adaptive card's event handlers. onExecuteAction is invoked
             // whenever an action is clicked in the card
             adaptiveCard.onExecuteAction = function(action) { 
-                //alert("Hello! "+ action.data.myName+ "\nEmail: "+ action.data.myEmail+ "\nPhone: "+ action.data.myTel); 
                 alert(JSON.stringify(action.data));
             }
 
